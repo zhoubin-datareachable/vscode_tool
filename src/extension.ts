@@ -1,5 +1,10 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
+import { ToolTree } from "./tree/tool";
+import { Uri, WebviewPanel } from "vscode";
+import * as path from "path";
+import { DocsTree } from "./tree/docs";
+import { CollectionTree } from "./tree/collection";
 
 const getScssTemplate = function (authorName: string) {
   const scssTemplate = `
@@ -63,6 +68,8 @@ export default ${componentName};
   return reactTemplate;
 };
 
+let currentSrc = "";
+let panel: WebviewPanel | null;
 // 写入文件
 const writeFile = (
   path: string,
@@ -99,6 +106,15 @@ const writeFile = (
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  // 注册provider
+  vscode.window.registerTreeDataProvider("commonTool", new ToolTree());
+  vscode.window.registerTreeDataProvider("docs", new DocsTree());
+  vscode.window.registerTreeDataProvider("collection", new CollectionTree());
+
+  vscode.commands.registerCommand("tool.openSite", (params) => {
+    openInWebview(params, context);
+  });
+
   // 创建普通组件
   context.subscriptions.push(
     vscode.commands.registerCommand("react_tool.addComponents", (uri) => {
@@ -134,5 +150,116 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
+function openInWebview(
+  params: { title: string; icon: any; url: string },
+  context: vscode.ExtensionContext
+) {
+  // 创建webview
+  if (!panel) {
+    panel = vscode.window.createWebviewPanel(
+      "webview", // viewType
+      "", // 视图标题
+      vscode.ViewColumn.One,
+      {
+        enableFindWidget: true,
+        enableCommandUris: true,
+        enableScripts: true, // 启用JS，默认禁用
+        retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+      }
+    );
+  }
+  panel.onDidDispose(() => {
+    panel = null;
+    currentSrc = "";
+  });
+  panel.title = params.title || "表情";
+  panel.iconPath = vscode.Uri.file(
+    path.join(
+      __dirname,
+      "../resources",
+      params.icon || "icon_" + "tool" + ".svg"
+    )
+  );
+
+  if (params.url !== currentSrc) {
+    currentSrc = params.url;
+    panel.webview.html = getWebViewContent("/view/" + "tool.html");
+    panel.webview.postMessage({ command: "load", params: params });
+  }
+
+  panel.reveal();
+}
+
+function getWebViewContent(templatePath: string) {
+  const resourcePath = path.join(__filename, "../../resources", templatePath);
+  console.log(resourcePath);
+
+  const dirPath = path.dirname(resourcePath);
+  let html = `<html>
+  <head>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+    </style>
+    <script>
+      var params;
+
+      window.addEventListener("message", (event) => {
+        const message = event.data;
+        if (message.command == "load") {
+          params = message.params;
+
+          document.getElementById("ifrDom").onload = function () {
+            log("iframeOnLoaded");
+          };
+          document.getElementById("ifrDom").src = message.params.url;
+          document.getElementById("description").innerText =
+            message.params.description;
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div
+      style="width: 100%; height: 100%; display: flex; flex-direction: column"
+    >
+      <iframe
+        id="ifrDom"
+        src=""
+        width="100%"
+        style="flex: 1; width: 100%"
+        frameborder="no"
+        border="0"
+      ></iframe>
+    </div>
+  </body>
+</html>`;
+  html = html.replace(
+    /(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g,
+    (m, $1, $2) => {
+      if ($2.indexOf("https://") < 0) {
+        return (
+          $1 +
+          vscode.Uri.file(path.resolve(dirPath, $2))
+            .with({ scheme: "vscode-resource" })
+            .toString() +
+          '"'
+        );
+      } else {
+        return $1 + $2 + '"';
+      }
+    }
+  );
+  return html;
+}
 // this method is called when your extension is deactivated
 export function deactivate() {}
