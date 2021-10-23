@@ -6,13 +6,23 @@ import * as path from "path";
 import { DocsTree } from "./tree/docs";
 import { CollectionTree } from "./tree/collection";
 
+const getCurrentDate = function () {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month =
+    date.getMonth() < 9 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`;
+  const day = date.getDate() <= 9 ? `0${date.getDate()}` : `${date.getDate()}`;
+
+  return `${year}-${month}-${day}`;
+};
+
 const getScssTemplate = function (authorName: string) {
   const scssTemplate = `
 /**
 * @file 
-* @date 2021-08-26
+* @date ${getCurrentDate()}
 * @author ${authorName} 
-* @lastModify ${authorName}  2021-08-26
+* @lastModify ${authorName}  ${getCurrentDate()}
 */
 /* <------------------------------------ **** CONSTANT IMPORT START **** ------------------------------------ */
 /** Import all the reference constant after this line */
@@ -24,8 +34,8 @@ const getScssTemplate = function (authorName: string) {
 /** The demo mixin is ..........*/
 @mixin demo {}
 /* <------------------------------------ **** SECTION1 MIXIN END **** ------------------------------------ */
-/* <--------------------------- * SECTION1 * --------------------------- */
-/* <--------------------------- * SECTION1 * --------------------------- */
+/* <------------------------------------ **** ONE START **** ------------------------------------ */
+/* <------------------------------------ **** ONE END **** ------------------------------------ */
 `;
   return scssTemplate;
 };
@@ -34,14 +44,14 @@ const getReactTemplate = function (authorName: string, componentName: string) {
   const reactTemplate = `
 /**
 * @file
-* @date 2021-08-26
+* @date ${getCurrentDate()}
 * @author ${authorName}
-* @lastModify ${authorName} 2021-08-26
+* @lastModify ${authorName} ${getCurrentDate()}
 */
 /* <------------------------------------ **** DEPENDENCE IMPORT START **** ------------------------------------ */
 /** This section will include all the necessary dependence for this tsx file */
-import React, { useState } from 'react';
-import { Row, Col } from 'antd';
+import React from 'react';
+import style from './style.scss'
 /* <------------------------------------ **** DEPENDENCE IMPORT END **** ------------------------------------ */
 /* <------------------------------------ **** INTERFACE START **** ------------------------------------ */
 /** This section will include all the interface for this tsx file */
@@ -58,8 +68,9 @@ const ${componentName} = (): JSX.Element => {
 /************* This section will include this component general function *************/
 /* <------------------------------------ **** FUNCTION END **** ------------------------------------ */
 return (
-<Row>
-</Row>
+  <div className="${componentName.replace(/^\S/, (s) =>
+    s.toLocaleLowerCase()
+  )}_container"></div>
 );
 };
 export default ${componentName};
