@@ -27,10 +27,10 @@
     "host": "smtp.qq.com",
     "port": 465,
     "auth": {
-      "user": "525589458@qq.com",
-      "pass": "sfrgsezcdficcabg"
+      "user": "",
+      "pass": ""
     },
-    "to": "bin.zhou@datareachable.com",
+    "to": "",
     "subject": ""
   }
 }
