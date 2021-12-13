@@ -5,7 +5,7 @@
   "keywords": [
     "react工具"
   ],
-  "publisher": "zhoubin",
+  "publisher": "tudou",
   "version": "0.0.3",
   "engines": {
     "vscode": "^1.59.1"
@@ -15,32 +15,33 @@
   ],
   "icon": "images/icon.png",
   "activationEvents": [
-    "onCommand:react_tool.addComponents",
-    "onCommand:react_tool.addModuleComponents",
-    "onView:commonTool",
-    "onView:docs",
-    "onView:collection"
+    "onCommand:extension.addComponents",
+    "onCommand:extension.showGitCommit"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "react_tool.addComponents",
-        "title": "新建一般组件"
+        "command": "extension.addComponents",
+        "title": "新建组件"
       },
       {
-        "command": "react_tool.addModuleComponents",
-        "title": "新建组件库组件"
+        "command": "extension.showGitCommit",
+        "title": "show git commit template",
+        "icon": "$(octoface)"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "react_tool.addComponents",
+          "command": "extension.addComponents",
           "group": "navigation"
-        },
+        }
+      ],
+      "scm/title": [
         {
-          "command": "react_tool.addModuleComponents",
+          "when": "scmProvider == git",
+          "command": "extension.showGitCommit",
           "group": "navigation"
         }
       ]
@@ -52,43 +53,39 @@
           "default": "admin",
           "description": "请输入用户名"
         },
-        "collection": {
-          "type": "array",
-          "default": [
-            {
-              "title": "Web 技术周刊",
-              "url": "https://www.yuque.com/awesome/fe_weekly"
-            }
-          ],
-          "description": "请添加网址"
+        "GitCommitPlugin.ShowEmoji": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "是否展现 `Emoji` 图标"
         }
       }
     },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "tool",
-          "title": "工具箱",
-          "icon": "images/tool.svg"
-        }
-      ]
-    },
-    "views": {
-      "tool": [
-        {
-          "id": "commonTool",
-          "name": "常用工具"
-        },
-        {
-          "id": "docs",
-          "name": "文档查询"
-        },
-        {
-          "id": "collection",
-          "name": "个人收藏"
-        }
-      ]
-    }
+    "snippets": [
+      {
+        "language": "javascript",
+        "path": "./snippets/snippets.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets/snippets.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/snippets.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/snippets.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets/ts-snippets.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets/ts-snippets.json"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
