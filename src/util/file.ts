@@ -12,5 +12,11 @@ const saveFile = (path: string, fileName: string, content: string) => {
     vscode.window.showInformationMessage("创建成功");
   });
 };
-
-export { saveFile };
+/**
+ * 获取文件数据
+ */
+const getText = (path: string): string => {
+  const text = fs.readFileSync(path, { encoding: "utf-8" });
+  return text;
+};
+export { saveFile, getText };

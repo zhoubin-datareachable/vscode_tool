@@ -16,7 +16,8 @@
   "icon": "images/icon.png",
   "activationEvents": [
     "onCommand:extension.addComponents",
-    "onCommand:extension.showGitCommit"
+    "onCommand:extension.showGitCommit",
+    "onCommand:extension.sendEmail"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -29,6 +30,10 @@
         "command": "extension.showGitCommit",
         "title": "show git commit template",
         "icon": "$(octoface)"
+      },
+      {
+        "command": "extension.sendEmail",
+        "title": "发送邮件"
       }
     ],
     "menus": {
@@ -36,6 +41,13 @@
         {
           "command": "extension.addComponents",
           "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId == html",
+          "command": "extension.sendEmail",
+          "group": "navigation@2"
         }
       ],
       "scm/title": [
@@ -57,6 +69,16 @@
           "type": "boolean",
           "default": true,
           "markdownDescription": "是否展现 `Emoji` 图标"
+        },
+        "emailConfig": {
+          "host": "smtp.qq.com",
+          "port": 465,
+          "auth": {
+            "user": "",
+            "pass": ""
+          },
+          "to": "",
+          "subject": ""
         }
       }
     },
@@ -99,18 +121,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.59.0",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.2.2",
     "@types/node": "14.x",
-    "eslint": "^7.27.0",
+    "@types/nodemailer": "^6.4.4",
+    "@types/vscode": "^1.59.0",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.27.0",
     "glob": "^7.1.7",
     "mocha": "^8.4.0",
+    "ts-loader": "^9.2.2",
     "typescript": "^4.3.2",
     "vscode-test": "^1.5.2",
-    "ts-loader": "^9.2.2",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
   },
@@ -122,5 +145,8 @@
     "type": "git",
     "url": "https://github.com/zhoubin-datareachable/vscode-tool"
   },
-  "homepage": "https://github.com/zhoubin-datareachable/vscode-tool/README.md"
+  "homepage": "https://github.com/zhoubin-datareachable/vscode-tool/README.md",
+  "dependencies": {
+    "nodemailer": "^6.7.2"
+  }
 }

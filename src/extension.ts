@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
 import { getScssTemplate } from "./config/scss-template";
 import { getJsxTemplate } from "./config/jsx-template";
-import { saveFile } from "./util/file";
+import { getText, saveFile } from "./util/file";
 import CommitInputType from "./config/commit-input";
 import { QuickPickOptions } from "vscode";
 import { getCurrentDate } from "./util/time";
 import { GitExtension } from "./types/git";
 import CommitType from "./config/commit-type";
+import sendEmail from "./util/sendEmail";
 export interface GitMessage {
   icon: string;
   type: string;
@@ -103,4 +104,14 @@ export function activate(context: vscode.ExtensionContext) {
         }
       });
   });
+
+  // 发送邮件
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.sendEmail", (uri) => {
+      const length = uri.path.length;
+      const path = uri.path.slice(1, length).replace(/\//g, "\\");
+      const html = getText(path);
+      sendEmail(html);
+    })
+  );
 }

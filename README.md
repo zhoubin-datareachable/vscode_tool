@@ -1,7 +1,11 @@
 # 配置用户名
 
+### 新建组件作者配置
+
 ```json
-author_name:"admin"
+{
+  "author_name": "admin"
+}
 ```
 
 ```js
@@ -13,6 +17,34 @@ author_name:"admin"
  */
 ```
 
-# 使用
-
 ![](https://i0.hdslb.com/bfs/album/8f580014bb8d7374d8ae458c19f88d8829152c02.png)
+
+### 发送邮件配置
+
+```json
+{
+  "emailConfig": {
+    "host": "smtp.qq.com",
+    "port": 465,
+    "auth": {
+      "user": "525589458@qq.com",
+      "pass": "sfrgsezcdficcabg"
+    },
+    "to": "bin.zhou@datareachable.com",
+    "subject": ""
+  }
+}
+```
+
+### git 提交
+
+![](https://s3.bmp.ovh/imgs/2021/12/48a5e00c200f5299.gif)
+
+### 代码片段
+
+```js
+useState;
+useEffect;
+useHistory;
+useDispatch;
+```
