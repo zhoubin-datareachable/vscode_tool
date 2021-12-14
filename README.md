@@ -48,3 +48,9 @@ useEffect;
 useHistory;
 useDispatch;
 ```
+
+### 打包
+
+```js
+vsce package
+```
