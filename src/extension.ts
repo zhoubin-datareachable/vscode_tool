@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
       const author = configuration.get("author_name", "admin");
 
       // 写入文件
-      saveFile(path, "index.jsx", getJsxTemplate(author, componentName));
+      saveFile(path, "index.tsx", getJsxTemplate(author, componentName));
       saveFile(path, "style.scss", getScssTemplate(author));
     })
   );
