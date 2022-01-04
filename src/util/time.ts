@@ -4,7 +4,7 @@
  * @returns
  */
 const fillZero = function (n: number) {
-  return n < 10 ? `n${n}` : n;
+  return n < 10 ? `0${n}` : n;
 };
 
 /**
