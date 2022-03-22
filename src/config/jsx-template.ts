@@ -101,6 +101,7 @@ const jsxAlertTemplate = [
   "         </div>",
   "     </div>",
   " );",
+  "};",
   "export default $2;",
   "/* <------------------------------------ **** FUNCTION COMPONENT END **** ------------------------------------ */",
 ];
