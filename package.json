@@ -6,7 +6,7 @@
     "react工具"
   ],
   "publisher": "tudou",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.59.1"
   },
@@ -16,6 +16,7 @@
   "icon": "images/icon.png",
   "activationEvents": [
     "onCommand:extension.addComponents",
+    "onCommand:extension.addAlert",
     "onCommand:extension.showGitCommit",
     "onCommand:extension.sendEmail"
   ],
@@ -25,6 +26,10 @@
       {
         "command": "extension.addComponents",
         "title": "新建组件"
+      },
+      {
+        "command": "extension.addAlert",
+        "title": "新建弹窗"
       },
       {
         "command": "extension.showGitCommit",
@@ -40,6 +45,10 @@
       "explorer/context": [
         {
           "command": "extension.addComponents",
+          "group": "navigation"
+        },
+        {
+          "command": "extension.addAlert",
           "group": "navigation"
         }
       ],

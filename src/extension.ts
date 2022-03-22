@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { getScssTemplate } from "./config/scss-template";
-import { getJsxTemplate } from "./config/jsx-template";
+import { getScssAlertTemplate, getScssTemplate } from "./config/scss-template";
+import { getJsxAlertTemplate, getJsxTemplate } from "./config/jsx-template";
 import { getText, saveFile } from "./util/file";
 import CommitInputType from "./config/commit-input";
 import { QuickPickOptions } from "vscode";
@@ -60,6 +60,24 @@ export function activate(context: vscode.ExtensionContext) {
       // 写入文件
       saveFile(path, "index.tsx", getJsxTemplate(author, componentName));
       saveFile(path, "style.scss", getScssTemplate(author));
+    })
+  );
+
+  // 创建Alert组件
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.addAlert", (uri) => {
+      const length = uri.path.length;
+      const path = uri.path.slice(1, length).replace(/\//g, "\\");
+      const pathArray = path.split("\\");
+      const componentName = pathArray[pathArray.length - 1];
+
+      // 获取用户名
+      const configuration = vscode.workspace.getConfiguration();
+      const author = configuration.get("author_name", "admin");
+
+      // 写入文件
+      saveFile(path, "index.tsx", getJsxAlertTemplate(author, componentName));
+      saveFile(path, "style.scss", getScssAlertTemplate(author, componentName));
     })
   );
 
