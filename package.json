@@ -18,7 +18,8 @@
     "onCommand:extension.addComponents",
     "onCommand:extension.addAlert",
     "onCommand:extension.showGitCommit",
-    "onCommand:extension.sendEmail"
+    "onCommand:extension.sendEmail",
+    "onLanguage:scss"
   ],
   "main": "./dist/extension.js",
   "contributes": {

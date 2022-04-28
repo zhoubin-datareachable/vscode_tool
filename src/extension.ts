@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as fs from "fs";
 import { getScssAlertTemplate, getScssTemplate } from "./config/scss-template";
 import { getJsxAlertTemplate, getJsxTemplate } from "./config/jsx-template";
 import { getText, saveFile } from "./util/file";
@@ -130,6 +131,74 @@ export function activate(context: vscode.ExtensionContext) {
       const path = uri.path.slice(1, length).replace(/\//g, "\\");
       const html = getText(path);
       sendEmail(html);
+    })
+  );
+
+  // scss提示
+  context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider("scss", {
+      provideCompletionItems(document, position) {
+        // 获取项目路径
+        const length = document.uri.path.length;
+        const _path = document.uri.path.slice(1, length).replace(/\//g, "\\");
+        let constantPath = "";
+        const match = _path.match(/(\S*)src/);
+        if (!match) {
+          return [];
+        }
+        constantPath = match[0] + "\\Constant";
+        // 处理color
+        const colorFile = fs.readFileSync(`${constantPath}\\color.scss`, {
+          encoding: "utf-8",
+        });
+        const arr: Array<vscode.CompletionItem> = [];
+        let colorStr = colorFile.replace(
+          /(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/)|(\/\/.*)/g,
+          ""
+        );
+        const colorArray = colorStr.replace(/\r\n/g, "").split(";");
+        colorArray.map((item) => {
+          if (item.includes("$shadow")) {
+            const completionItem = new vscode.CompletionItem(
+              `box-shadow: ${item.split(":")[0]}`
+            );
+            arr.push(completionItem);
+          } else {
+            const completionItem = new vscode.CompletionItem(
+              `color: ${item.split(":")[0]}`
+            );
+            arr.push(completionItem);
+          }
+        });
+        // 处理font
+        const fontFile = fs.readFileSync(`${constantPath}\\font.scss`, {
+          encoding: "utf-8",
+        });
+
+        let fontStr = fontFile
+          .replace(
+            /(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/)|(\/\/.*)/g,
+            ""
+          )
+          .replace(/\r\n/g, "");
+        const fontArray = fontStr.split(";");
+        fontArray.map((item) => {
+          if (item.includes("$fs")) {
+            const completionItem = new vscode.CompletionItem(
+              `font: ${item.split(":")[0]}`
+            );
+            arr.push(completionItem);
+          }
+          if (item.includes("@mixin")) {
+            const newItem = item.replace(/\}/g, "").replace(/@mixin/, "");
+            const completionItem = new vscode.CompletionItem(
+              `@include ${newItem.split("{")[0].trim()}()`
+            );
+            arr.push(completionItem);
+          }
+        });
+        return arr;
+      },
     })
   );
 }
