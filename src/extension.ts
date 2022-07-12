@@ -158,17 +158,10 @@ export function activate(context: vscode.ExtensionContext) {
         );
         const colorArray = colorStr.replace(/\r\n/g, "").split(";");
         colorArray.map((item) => {
-          if (item.includes("$shadow")) {
-            const completionItem = new vscode.CompletionItem(
-              `box-shadow: ${item.split(":")[0]}`
-            );
-            arr.push(completionItem);
-          } else {
-            const completionItem = new vscode.CompletionItem(
-              `color: ${item.split(":")[0]}`
-            );
-            arr.push(completionItem);
-          }
+          const completionItem = new vscode.CompletionItem(
+            `${item.split(":")[0]}`
+          );
+          arr.push(completionItem);
         });
         // 处理font
         const fontFile = fs.readFileSync(`${constantPath}\\font.scss`, {
@@ -185,14 +178,14 @@ export function activate(context: vscode.ExtensionContext) {
         fontArray.map((item) => {
           if (item.includes("$fs")) {
             const completionItem = new vscode.CompletionItem(
-              `font: ${item.split(":")[0]}`
+              item.split(":")[0]
             );
             arr.push(completionItem);
           }
           if (item.includes("@mixin")) {
             const newItem = item.replace(/\}/g, "").replace(/@mixin/, "");
             const completionItem = new vscode.CompletionItem(
-              `@include ${newItem.split("{")[0].trim()}()`
+              `${newItem.split("{")[0].trim()}()`
             );
             arr.push(completionItem);
           }
